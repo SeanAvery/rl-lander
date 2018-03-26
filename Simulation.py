@@ -17,7 +17,6 @@ class Simulation():
         self.state_dim_high = self.env.observation_space.high
     
     def choose_action(self):
-        print('action_dim_len', self.action_dim_len)
         return random.randint(0, self.action_dim_len - 1)
     
     def run(self, num_episodes):
