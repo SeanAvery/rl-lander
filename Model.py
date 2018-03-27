@@ -45,6 +45,10 @@ class Model():
                     self.generate_network(
                         self.new_state,
                         is_trainable=False)
+    def get_q_state(self):
+        return sess.run(
+                self.q_action_values_old,
+                feed_dict={ state: old_state[None], is_training: False })
 
     def init_sess(self):
         self.sess = tf.Session()
