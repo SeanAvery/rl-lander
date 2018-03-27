@@ -20,6 +20,13 @@ class Model():
 
         self.gama = 0.99
 
+        self.dense1_output_dim = 512
+
+        # memory container
+        self.memory = []
+
+        self.update_slow_target_every = 100
+
     def calc_epsilon(self):
         epsilon = self.epsilon * self.epsilon_decay
         self.epsilon = max(self.min_epsilon, epsilon)
@@ -53,43 +60,24 @@ class Model():
     def init_sess(self):
         self.sess = tf.Session()
 
-
     def build_network(self, is_trainable):
-        self.dense1 = tf.layers.dense(
-                self.state_dim_len,
-                self.h1_input_size,
-                activation=tf.nn.relu,
-                trainable = is_trainable,
-                name='dense1')
+        self.dense1 = self.creat_dense_layer(
+            self.state_dim_len, self.dense1_output_dim, 'dense1', is_trainable)
 
-        self.dropout1 = tf.layers.dropout(
-                self.dense1,
-                rate=self.dropout_rate,
-                trainable=is_trainable,
-                name='dropout1')
+        self.dropout1 = self.crate_dropout_layer(
+            self.dense1,'dropout1', is_trainable)
 
-        self.dense2 = self.layers.dense(
-                self.dropout1,
-                self.dense2_input_size,
-                activation=tf.nn.relu,
-                trainable = is_trainable,
-                mame='dense2')
+        self.dense2 = self.create_dense_layer(
+            self.dropout1, self.dens2_output_dim, 'dense2', is_trainable)
 
-        self.dropout2 = tf.layers.droput(
-                self.dense2, rate=self.dropout_rate, trainable=is_trainable, name='dropout2')
+        self.dropout2 = self.create_dropout_layer(
+            self.dense2, 'dropout2', is_trainable)
 
-        self.dense3 = tf.layers.dense(
-                self.dropout2,
-                self.dense3_input_size,
-                action=tf.nn.relu,
-                trainable = is_trainable
-                name='dense3')
+        self.dense3 = self.create_dense_layer(
+            self.dropout2, self.dens2_output_dim, 'dense2', is_trainable)
 
-        self.dropout3 = tfl.layers.dense(
-                self.dense3,
-                rate=self.dropout_rate,
-                trainable=is_trainable,
-                name='dropout3')
+        self.droput3 = self.create_dropout_layer(
+            self.dropout3, 'dropout3', is_trainable)
 
         self.activation_values = tf.squeeze(
                 tf.layers.dense(
@@ -97,3 +85,17 @@ class Model():
                     self.action_dim_len,
                     trainable=is_trainable,
                     name='dense3'))
+
+    def create_dense_layer(self, input_dim, output_dim, name, is_trainable):
+        return tf.layers.dense(
+            input_dim,
+            output_dim,
+            activation=tf.nn.relu,
+            trainable=is_trainable)
+
+    def create_dropout_layer(self, input_dim, name, is_trainable):
+        return tf.layers.dropout(
+            input_dim,
+            rate=self.droput_rate,
+            training=is_trainable,
+            name=name)
