@@ -26,16 +26,42 @@ class Simulation():
             q_state = model.get_q_state()
             return np.argmax(q_sate)
 
-    def run(self, num_episodes):
+    def run_simulation(self, num_episodes):
         for i in range(num_episodes):
-            self.env.reset()
-            while True:
-                self.env.render()
-                action = self.choose_action()
-                state, reward, done, info = self.env.step(action)
-                sleep(0.1)
-                if done:
-                    break
+            self.run_episodes()
+
+    def run_episode(self):
+        self.num_ticks = 0
+        self.total_reward = 0
+
+        self.old_state = self.env.reset()
+
+        while True:
+            done = self.run_tick()
+            if done:
+                break
+
+    def run_tick(self):
+        self.num_ticks += 1
+        sleep(0.1)
+        self.env.render()
+        return self.run_step()
+
+    def run_step(self):
+        action = self.choose_action()
+        new_state, reward, done, info = self.env.step(action)
+
+        self.model.memory.append(
+            (old_state, action, reward, new_state,
+                0.0 if done else 1.0))
+
+        if self.num_tick % self.model.update_slow_target_every:
+            print('update slow target op')
+
+        old_state = new_state
+
+        return done
+
 
 if __name__ == '__main__':
     model = Model()
