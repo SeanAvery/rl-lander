@@ -1,9 +1,12 @@
 import gym
 import random
 from time import sleep
+from Model import Model
+import numpy as np
 
 class Simulation():
-    def __init__(self):
+    def __init__(self, model):
+        self.model = model
         self.env = gym.make('LunarLander-v2')
         self.get_action_dim()
         self.get_space_dim()
@@ -15,10 +18,14 @@ class Simulation():
         self.state_dim_len = len(self.env.observation_space.low)
         self.state_dim_low = self.env.observation_space.low
         self.state_dim_high = self.env.observation_space.high
-    
+
     def choose_action(self):
-        return random.randint(0, self.action_dim_len - 1)
-    
+        if np.random.random() < self.model.epsilon:
+            return np.random.randint(self.action_dim_len)
+        else:
+            q_state = model.get_q_state()
+            return np.argmax(q_sate)
+
     def run(self, num_episodes):
         for i in range(num_episodes):
             self.env.reset()
@@ -29,7 +36,8 @@ class Simulation():
                 sleep(0.1)
                 if done:
                     break
-        
+
 if __name__ == '__main__':
+    model = Model()
     simulation = Simulation()
     simulation.run(3)
