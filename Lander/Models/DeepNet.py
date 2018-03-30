@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam
 import random
+import numpy as np
 
 class DeepNet():
     def __init__(self, hyper_params):
@@ -16,6 +17,7 @@ class DeepNet():
         self.epislon_min = params['epsilon_min']
         self.epsilon_decay = params['epsilon_decay']
         self.batch_size = params['batch_size']
+        self.gamma = params['gamma']
 
     def build_network(self, state_dim, action_dim):
         model = Sequential()
@@ -33,14 +35,16 @@ class DeepNet():
         x_batch, y_batch = [], []
         mini_batch = random.sample(self.memory, min(len(self.memory), self.batch_size))
 
-        for old_state, action, rweard, new_state, done in mini_batch:
+        for old_state, action, reward, new_state, done in mini_batch:
+            print('old_state', old_state)
             y_target = self.model.predict(old_state)
+            print('y_target', y_target)
             if done:
                 # estimated future reward is 0
                 y_target[0][action] = reward
             else:
                 # find estimated future rewards
-                y_target[0][action] = reward + self.gamma * np.max(self.model.preidct(new_state)[0])
+                y_target[0][action] = reward + self.gamma * np.max(self.model.predict(new_state)[0])
 
             x_batch.append(old_state[0])
             y_batch.append(y_target[0])
