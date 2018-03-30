@@ -28,6 +28,9 @@ class Simulation():
         else:
             return np.argmax(self.model.model.predict(state))
 
+    def reshape(self, state):
+        return state.reshape(1, self.state_dim_len)
+
     def run_simulation(self, num_episodes):
         for i in range(num_episodes):
             self.run_episode()
@@ -36,7 +39,7 @@ class Simulation():
         self.num_ticks = 0
         self.total_reward = 0
 
-        self.old_state = self.env.reset()
+        self.old_state = self.reshape(self.env.reset())
 
         while True:
             done = self.run_tick()
@@ -44,7 +47,7 @@ class Simulation():
                 break
 
     def run_tick(self):
-        sleep(0.1)
+        sleep(0.01)
         self.num_ticks += 1
         self.env.render()
         return self.run_step()
@@ -52,6 +55,7 @@ class Simulation():
     def run_step(self):
         action = self.choose_action(self.old_state)
         new_state, reward, done, info = self.env.step(action)
+        new_state = self.reshape(new_state)
         self.model.memory.append((self.old_state, action, reward, new_state, done))
         self.old_state = new_state
         self.model.update_network()
