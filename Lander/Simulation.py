@@ -52,5 +52,7 @@ class Simulation():
     def run_step(self):
         action = self.choose_action(self.old_state)
         new_state, reward, done, info = self.env.step(action)
+        self.model.memory.append((self.old_state, action, reward, new_state, done))
         self.old_state = new_state
+        self.model.update_network()
         return done

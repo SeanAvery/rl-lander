@@ -10,7 +10,8 @@ hyper_params_1 = {
     'epsilon_min': 0.05,
     'epsilon_decay': 0.9995,
     'alpha': 0.1,
-    'alpha_decay': 0.9995
+    'alpha_decay': 0.9995,
+    'batch_size': 32
 }
 
 '''
@@ -20,3 +21,4 @@ hyper_params_1 = {
 if __name__ == '__main__':
     deep_net = DeepNet(hyper_params_1)
     simulation = Simulation(deep_net)
+    simulation.run_simulation(10)
