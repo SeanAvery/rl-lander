@@ -1,5 +1,4 @@
 sudo apt-get install python3-pip
 
-git clone https://github.com/SeanAvery/rl-lander.git
+sudo apt-get install swig
 
-cd Lander
