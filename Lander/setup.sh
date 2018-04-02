@@ -7,3 +7,5 @@ cd pybox2d
 sudo pip3 install -e .
 
 sudo apt-get install python-opengl
+
+sudo apt-get install nvidia-current nvidia-settings
