@@ -31,8 +31,13 @@ class Simulation():
     def reshape(self, state):
         return state.reshape(1, self.state_dim_len)
 
-    def run_simulation(self, num_episodes):
+    # def calc_reward(self, state):
+
+    def run_simulation(self, num_episodes, isTraining):
+        self.isTraining = isTraining
+
         for i in range(num_episodes):
+            print('run episode {0}'.format(i))
             self.run_episode()
 
     def run_episode(self):
@@ -47,16 +52,17 @@ class Simulation():
                 break
 
     def run_tick(self):
-        sleep(0.01)
         self.num_ticks += 1
-        self.env.render()
+        if not self.isTraining:
+            self.env.render()
         return self.run_step()
 
     def run_step(self):
         action = self.choose_action(self.old_state)
         new_state, reward, done, info = self.env.step(action)
         new_state = self.reshape(new_state)
-        self.model.memory.append((self.old_state, action, reward, new_state, done))
+        if self.isTraining:
+            self.model.memory.append((self.old_state, action, reward, new_state, done))
+            self.model.update_network()
         self.old_state = new_state
-        self.model.update_network()
         return done
