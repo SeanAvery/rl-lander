@@ -1,22 +1,20 @@
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
+from keras.optimizers import Adam
 
 class DropoutNet():
-    def __init__(self, simulation):
-        self.simulation = simulation
-
-        self.init_hyperparams()
-        self.build_model()
-
-    def init_hyperparams():
-        self.alpha = 0.1
-        self.epsilon 1.0
-        self.epsilon_decay = 0.9999
-        self.epsilon_min = 0.05
-
     def build_model(self):
         model = Sequential()
-
+        model.add(Dense(512, activation='relu', input_dim=self.state_dim))
+        model.add(DropOout(0.2))
+        model.add(Dense(512, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(self.action_dim, activation='linear'))
+        model.compile(
+            optimizer=Adam(
+                lr=self.alpha, 
+                decay=self.alpha_decay),
+                loss='mse')
 
 if __name__ == '__main__':
