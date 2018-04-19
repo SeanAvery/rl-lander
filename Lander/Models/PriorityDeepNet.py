@@ -2,6 +2,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam
+from heapq import heappush
 
 class PriorityDeepNet():
     def __init__(self, hyper_params):
@@ -25,6 +26,7 @@ class PriorityDeepNet():
         model.compile(
             optimizer=Adam(lr=self.alpha, decay=self.alpha_decay)
             loss='mse')
-                
-        
+
+    def append_memory(self, snapshot):
+        heappush(self.memory, snapshot)
 
