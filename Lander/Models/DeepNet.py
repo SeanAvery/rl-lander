@@ -36,9 +36,7 @@ class DeepNet():
         mini_batch = random.sample(self.memory, min(len(self.memory), self.batch_size))
 
         for old_state, action, reward, new_state, done in mini_batch:
-            print('old_state', old_state)
             y_target = self.model.predict(old_state)
-            print('y_target', y_target)
             if done:
                 # estimated future reward is 0
                 y_target[0][action] = reward
@@ -50,3 +48,4 @@ class DeepNet():
             y_batch.append(y_target[0])
 
         self.model.fit(np.array(x_batch), np.array(y_batch), batch_size=len(x_batch))
+    
