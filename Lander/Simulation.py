@@ -25,6 +25,9 @@ class Simulation():
             return np.random.randint(self.action_dim_len)
         else:
             return np.argmax(self.model.model.predict(state))
+    
+    def reshape_state(self, state):
+        return state.reshape(1, self.state_dim_len)
 
     def run_simulation(self, num_episodes, is_training):
         for i in range(num_episodes):
@@ -34,7 +37,7 @@ class Simulation():
         self.num_ticks = 0
         self.total_reward = 0
 
-        self.old_state = self.env.reset()
+        self.old_state = self.reshape_state(self.env.reset())
 
         while True:
             done = self.run_tick()
@@ -49,7 +52,7 @@ class Simulation():
     def run_step(self):
         action = self.choose_action()
         new_state, reward, done, info = self.env.step(action)
-
+        new_state = self.reshape_state(new_state)
         self.model.memory.append(
             (self.old_state, action, reward, new_state,
                 0.0 if done else 1.0))
