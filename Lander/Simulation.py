@@ -5,15 +5,17 @@ import numpy as np
 
 class Simulation():
     def __init__(self, model):
-        self.model = model
         self.env = gym.make('LunarLander-v2')
         self.get_action_dim()
-        self.get_space_dim()
+        self.get_state_dim()
+        
+        self.model = model
+        model.build_network(self.state_dim_len, self.action_dim_len)
 
     def get_action_dim(self):
-        self.action_dim_len =self.env.action_space.n
+        self.action_dim_len = self.env.action_space.n
 
-    def get_space_dim(self):
+    def get_state_dim(self):
         self.state_dim_len = len(self.env.observation_space.low)
         self.state_dim_low = self.env.observation_space.low
         self.state_dim_high = self.env.observation_space.high
@@ -22,8 +24,7 @@ class Simulation():
         if np.random.random() < self.model.epsilon:
             return np.random.randint(self.action_dim_len)
         else:
-            q_state = model.get_q_state()
-            return np.argmax(q_sate)
+            return np.argmax(self.model.model.predict(state))
 
     def run_simulation(self, num_episodes, is_training):
         for i in range(num_episodes):
@@ -42,7 +43,6 @@ class Simulation():
 
     def run_tick(self):
         self.num_ticks += 1
-        sleep(0.1)
         self.env.render()
         return self.run_step()
 
@@ -55,7 +55,8 @@ class Simulation():
                 0.0 if done else 1.0))
 
         if self.num_ticks % 10 == 0:
-            print('update the nn')
+            self.model.update_network()
+
         self.old_state = new_state
 
         return done
