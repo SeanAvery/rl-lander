@@ -1,11 +1,10 @@
 import gym
 import random
 from time import sleep
-# from Model import Model
 import numpy as np
 
 class Simulation():
-    def __init__(self):
+    def __init__(self, model):
         self.model = model
         self.env = gym.make('LunarLander-v2')
         self.get_action_dim()
@@ -26,9 +25,9 @@ class Simulation():
             q_state = model.get_q_state()
             return np.argmax(q_sate)
 
-    def run_simulation(self, num_episodes):
+    def run_simulation(self, num_episodes, is_training):
         for i in range(num_episodes):
-            self.run_episodes()
+            self.run_episode()
 
     def run_episode(self):
         self.num_ticks = 0
@@ -52,18 +51,12 @@ class Simulation():
         new_state, reward, done, info = self.env.step(action)
 
         self.model.memory.append(
-            (old_state, action, reward, new_state,
+            (self.old_state, action, reward, new_state,
                 0.0 if done else 1.0))
 
-        if self.num_tick % self.model.update_slow_target_every:
-            print('update slow target op')
-
-        old_state = new_state
+        if self.num_ticks % 10 == 0:
+            print('update the nn')
+        self.old_state = new_state
 
         return done
 
-#
-# if __name__ == '__main__':
-#     model = Model()
-#     simulation = Simulation()
-#     simulation.run(3)
