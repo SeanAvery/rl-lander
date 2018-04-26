@@ -52,20 +52,31 @@ class Simulation():
 
     def run_tick(self):
         self.num_ticks += 1
-        self.env.render()
+
+        if not self.isTraining:
+            self.env.render()
+
         return self.run_step()
 
     def run_step(self):
+        # choose action with probability exploration_rate
         action = self.choose_action()
+
+        # take action in env
         new_state, reward, done, info = self.env.step(action)
         new_state = self.reshape_state(new_state)
+
+        # add to memory for replay later
         self.model.memory.append(
             (self.old_state, action, reward, new_state,
                 0.0 if done else 1.0))
 
+        # update the model and replay 32 experiences
         if self.num_ticks % 10 == 0:
             self.model.update_network()
 
+        # for next iteration...
         self.old_state = new_state
 
+        # return episode state
         return done
