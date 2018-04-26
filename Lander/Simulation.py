@@ -8,7 +8,7 @@ class Simulation():
         self.env = gym.make('LunarLander-v2')
         self.get_action_dim()
         self.get_state_dim()
-        
+
         self.model = model
         model.build_network(self.state_dim_len, self.action_dim_len)
 
@@ -25,7 +25,7 @@ class Simulation():
             return np.random.randint(self.action_dim_len)
         else:
             return np.argmax(self.model.model.predict(state))
-    
+
     def reshape_state(self, state):
         return state.reshape(1, self.state_dim_len)
 
@@ -34,11 +34,17 @@ class Simulation():
             self.run_episode()
 
     def run_episode(self):
+        # episode statistics
         self.num_ticks = 0
         self.total_reward = 0
 
+        # update decay fn for epsilon hyperparam
+        self.model.update_epsilon()
+
+        # init state
         self.old_state = self.reshape_state(self.env.reset())
 
+        # proceed through simulation until a failure event `done`
         while True:
             done = self.run_tick()
             if done:
@@ -63,4 +69,3 @@ class Simulation():
         self.old_state = new_state
 
         return done
-
