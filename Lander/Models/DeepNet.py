@@ -25,6 +25,7 @@ class DeepNet():
         model = Sequential()
         model.add(Dense(512, activation='relu', input_dim=state_dim))
         model.add(Dense(512, activation='relu'))
+        model.add(Dense(512, activation='relu'))
         model.add(Dense(action_dim, activation='linear'))
         model.compile(optimizer=Adam(lr=self.alpha, decay=self.alpha_decay), loss='mse')
         self.model = model
