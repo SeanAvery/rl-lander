@@ -2,7 +2,9 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam
+from keras.callbacks import TensorBoard
 import random
+from time import time
 import numpy as np
 
 class DeepNet():
@@ -27,6 +29,8 @@ class DeepNet():
         model.compile(optimizer=Adam(lr=self.alpha, decay=self.alpha_decay), loss='mse')
         self.model = model
 
+        self.tensorboard = TensorBoard(log_dir="logs/{}".format(time())
+
     def calc_epsilon(self):
         epsilon = self.epsilon * self.epsilon_decay
         self.epsilon = max(self.epislon_min, epsilon)
@@ -47,5 +51,4 @@ class DeepNet():
             x_batch.append(old_state[0])
             y_batch.append(y_target[0])
 
-        self.model.fit(np.array(x_batch), np.array(y_batch), batch_size=len(x_batch))
-    
+        self.model.fit(np.array(x_batch), np.array(y_batch), batch_size=len(x_batch), callbacks=[self.tensorboard])
