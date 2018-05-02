@@ -1,11 +1,14 @@
 import gym
+from gym import wrappers
 import random
 from time import sleep
 import numpy as np
 
 class Simulation():
     def __init__(self, model):
-        self.env = gym.make('LunarLander-v2')
+        self.env = wrappers.monitor(
+            gym.make('LunarLander-v2'),
+            './simulations{0}'
         self.get_action_dim()
         self.get_state_dim()
 
@@ -24,13 +27,15 @@ class Simulation():
         if np.random.random() < self.model.epsilon:
             return np.random.randint(self.action_dim_len)
         else:
-            return np.argmax(self.model.model.predict(state))
+            return np.argmax(self.model.model.predict(self.old_state))
 
     def reshape_state(self, state):
         return state.reshape(1, self.state_dim_len)
-
+`
     def run_simulation(self, num_episodes, is_training):
+        self.is_training = is_training
         for i in range(num_episodes):
+            print('episode', i)
             self.run_episode()
 
     def run_episode(self):
@@ -39,7 +44,7 @@ class Simulation():
         self.total_reward = 0
 
         # update decay fn for epsilon hyperparam
-        self.model.update_epsilon()
+        self.model.calc_epsilon()
 
         # init state
         self.old_state = self.reshape_state(self.env.reset())
@@ -53,7 +58,7 @@ class Simulation():
     def run_tick(self):
         self.num_ticks += 1
 
-        if not self.isTraining:
+        if not self.is_training:
             self.env.render()
 
         return self.run_step()
