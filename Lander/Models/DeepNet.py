@@ -30,7 +30,11 @@ class DeepNet():
         model.compile(optimizer=Adam(lr=self.alpha, decay=self.alpha_decay), loss='mse')
         self.model = model
 
-        self.tensorboard = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=0, batch_sie=32, write_graph=True)
+        self.tensorboard = TensorBoard(
+                log_dir="logs/{}".format(time()), 
+                histogram_freq=0, 
+                batch_size=32, 
+                write_graph=True)
 
     def calc_epsilon(self):
         epsilon = self.epsilon * self.epsilon_decay
