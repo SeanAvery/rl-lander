@@ -1,14 +1,19 @@
 import gym
 from gym import wrappers
 import random
-from time import sleep
+from time import sleep, time
+import datetime
 import numpy as np
 
 class Simulation():
     def __init__(self, model):
-        self.env = wrappers.monitor(
-            gym.make('LunarLander-v2'),
-            './simulations{0}'
+        self.monitoring = False
+        env = gym.make('LunarLander-v2')
+        self.env = wrappers.Monitor(
+            env,
+            './Simulations/{0}'.format(time()),
+            video_callable=self.monitoring)
+
         self.get_action_dim()
         self.get_state_dim()
 
@@ -31,10 +36,13 @@ class Simulation():
 
     def reshape_state(self, state):
         return state.reshape(1, self.state_dim_len)
-`
+
     def run_simulation(self, num_episodes, is_training):
         self.is_training = is_training
+        if not self.is_training:
+            self.monitoring = True
         for i in range(num_episodes):
+            self.num_episodes = i
             print('episode', i)
             self.run_episode()
 
@@ -58,7 +66,7 @@ class Simulation():
     def run_tick(self):
         self.num_ticks += 1
 
-        if not self.is_training:
+        if not self.is_training or self.num_episodes % 100 == 0:
             self.env.render()
 
         return self.run_step()

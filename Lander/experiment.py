@@ -8,9 +8,9 @@ from Simulation import Simulation
 hyper_params_1 = {
     'epsilon': 1,
     'epsilon_min': 0.05,
-    'epsilon_decay': 0.95,
+    'epsilon_decay': 0.999,
     'alpha': 1,
-    'alpha_decay': 0.95,
+    'alpha_decay': 0.999,
     'batch_size': 32,
     'gamma': 0.99
 }
@@ -20,7 +20,7 @@ hyper_params_1 = {
 '''
 
 run_params = {
-    'train_ticks': 10000,
+    'train_ticks': 3000,
     'eval_ticks': 100
 }
 
