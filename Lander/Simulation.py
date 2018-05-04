@@ -12,7 +12,7 @@ class Simulation():
         self.env = wrappers.Monitor(
             env,
             './Simulations/{0}'.format(time()),
-            video_callable=self.monitoring)
+            video_callable=lambda x: self.monitoring)
 
         self.get_action_dim()
         self.get_state_dim()
@@ -40,7 +40,9 @@ class Simulation():
     def run_simulation(self, num_episodes, is_training):
         self.is_training = is_training
         if not self.is_training:
+            print('hereeee')
             self.monitoring = True
+            print('self.monitoring', self.monitoring)
         for i in range(num_episodes):
             self.num_episodes = i
             print('episode', i)
@@ -66,7 +68,7 @@ class Simulation():
     def run_tick(self):
         self.num_ticks += 1
 
-        if not self.is_training or self.num_episodes % 100 == 0:
+        if not self.is_training or self.num_episodes % 10 == 0:
             self.env.render()
 
         return self.run_step()
