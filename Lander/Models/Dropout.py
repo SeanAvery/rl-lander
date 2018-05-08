@@ -33,3 +33,19 @@ class Dropout():
                 histogram_freq=0,
                 batch_size=32,
                 write_graph=True)
+
+    def update_model(self):
+        x, y = [], []
+        batch = self.Memory.sample()
+
+        for old_state, actoin, new_state, done in mini_batch:
+            y_target = self.model.predict(old_state)
+            if done:
+                y_target[0][action] = reward
+            else:
+                y_target[0][action] = reward + self.gamma * np.max(self.model.predict(new_state)[0])
+
+            x.append(old_state[0])
+            y.append(y_target[0])
+
+        self.model.fit(np.array(x), np.array(y), batch_size=len(x), callbacks=[self.tensorboard])
