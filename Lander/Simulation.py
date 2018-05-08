@@ -18,7 +18,7 @@ class Simulation():
         self.get_state_dim()
 
         self.model = model
-        model.build_network(self.state_dim_len, self.action_dim_len)
+        model.init_model(self.state_dim_len, self.action_dim_len)
 
     def get_action_dim(self):
         self.action_dim_len = self.env.action_space.n
@@ -40,9 +40,7 @@ class Simulation():
     def run_simulation(self, num_episodes, is_training):
         self.is_training = is_training
         if not self.is_training:
-            print('hereeee')
             self.monitoring = True
-            print('self.monitoring', self.monitoring)
         for i in range(num_episodes):
             self.num_episodes = i
             print('episode', i)
@@ -54,7 +52,7 @@ class Simulation():
         self.total_reward = 0
 
         # update decay fn for epsilon hyperparam
-        self.model.calc_epsilon()
+        self.model.update_epsilon()
 
         # init state
         self.old_state = self.reshape_state(self.env.reset())
@@ -88,7 +86,7 @@ class Simulation():
 
         # update the model and replay 32 experiences
         if self.num_ticks % 10 == 0:
-            self.model.update_network()
+            self.model.update_model()
 
         # for next iteration...
         self.old_state = new_state
