@@ -20,3 +20,7 @@ class Actor():
             loss='mse')
 
         self.model = model
+
+    def update_model(self, samples):
+        for old_state, action, reward, new_state, done in samples:
+            return 
