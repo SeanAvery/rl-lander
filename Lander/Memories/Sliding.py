@@ -9,9 +9,7 @@ class Memory():
     #is_full = lambda x: len(self.memories) > self.max_size
     
     def is_full(self):
-        print(self.max_size)
         if len(self.memories) > self.max_size:
-            print('its full')
             return True
         else:
             return False
